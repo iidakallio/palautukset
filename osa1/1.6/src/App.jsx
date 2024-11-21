@@ -28,41 +28,24 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const goodclick = () => setGood(good + 1)
-  const neutralclick = () => setNeutral(neutral + 1)
-  const badclick = () => setBad(bad + 1)
-
-
-  const DisplayGood = (props) => {
-    return (
-      <div>good {props.good}</div>
-    )
-  }
-  const DisplayNeutral = (props) => {
-    return (
-      <div>good {props.neutral}</div>
-    )
-  }
-  const DisplayBad = (props) => {
-    return (
-      <div>good {props.bad}</div>
-    )
-  }
+  const goodClick = () => setGood(good + 1)
+  const neutralClick = () => setNeutral(neutral + 1)
+  const badClick = () => setBad(bad + 1)
 
 
   return (
     <div>
       <h1>give feedback</h1>
 
-      <button onClick={goodclick}>
+      <button onClick={goodClick}>
         good
       </button>
 
-      <button onClick={neutralclick}>
+      <button onClick={neutralClick}>
         neutral
       </button>
 
-      <button onClick={badclick}>
+      <button onClick={badClick}>
         bad
       </button>
       <h1>statistics</h1>
