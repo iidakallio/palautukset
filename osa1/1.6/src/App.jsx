@@ -28,6 +28,24 @@ const App = () => {
     )
   }
 
+  const All = (props) => {
+    return (
+      <div>all {props.good + props.neutral + props.bad}</div>
+    )
+  }
+
+  const Average = (props) => {
+    return (
+      <div>average {(props.good * 1 + props.neutral * 0 + props.bad * (-1))/(props.good + props.neutral + props.bad)}</div>
+    )
+  }
+
+  const Positive = (props) => {
+    return (
+      <div>positive {props.good/(props.good + props.neutral + props.bad)} %</div>
+    )
+  }
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -47,6 +65,9 @@ const App = () => {
       <DisplayGood good={good}/>
       <DisplayNeutral neutral={neutral}/>
       <DisplayBad bad={bad}/>
+      <All good={good} neutral={neutral} bad={bad}/>
+      <Average good={good} neutral={neutral} bad={bad}/>
+      <Positive good={good} neutral={neutral} bad={bad}/>
       
       
     </div>
