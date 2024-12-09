@@ -17,21 +17,46 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
    
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
   const generateRandomAnecdote = () => {
     
     const randomNumber = Math.floor(Math.random() * anecdotes.length);
-    console.log(anecdotes.length, randomNumber)
+    console.log(anecdotes.length, randomNumber, points)
     setSelected(randomNumber);
 
   };
 
+  const voteAnecdote = () => {
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+  };
+
+  const MostVotes = () => {
+    var maxindex = points.indexOf(Math.max.apply(Math, points));
+    console.log(maxindex);
+    return (
+      <div>
+        {anecdotes[maxindex]} <br />
+        has {points[maxindex]} votes
+      </div>
+    );
+      
+    
+  };
+
   return (
     <div>
-        <p>{anecdotes[selected]}</p>
-       
-        <button onClick={generateRandomAnecdote}>next anecdote</button>
+        <h1>Anecdote of the day</h1>
+        {anecdotes[selected]}<br />
+        has {points[selected]} votes<br />
+        <Button handleClick={voteAnecdote} text="vote"/>
+        <Button handleClick={generateRandomAnecdote} text="next anecdote" />
+        <h1>Anecdote with most votes</h1>
+        <MostVotes points={points}/>
+
     </div>
   )
 }
