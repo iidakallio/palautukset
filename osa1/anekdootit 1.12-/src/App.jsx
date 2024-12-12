@@ -1,8 +1,8 @@
 
 import { useState } from 'react'
 
-const Button = (props) => {
-  return <button onClick={props.handleClick}>{props.text}</button>;
+const Button = ({handleClick, text}) => {
+  return <button onClick={handleClick}>{text}</button>;
 };
 
 const generateRandomAnecdote = (anecdotes, setSelected) => {
@@ -19,13 +19,13 @@ const voteAnecdote = (points, selected, setPoints) => {
   setPoints(newPoints);
 };
 
-const MostVotes = (props) => {
-  var maxindex = props.points.indexOf(Math.max(...props.points));
+const MostVotes = ({points, anecdotes}) => {
+  var maxindex = points.indexOf(Math.max(...points));
   console.log(maxindex);
   return (
     <div>
-      {props.anecdotes[maxindex]} <br />
-      has {props.points[maxindex]} votes
+      {anecdotes[maxindex]} <br />
+      has {points[maxindex]} votes
     </div>
   );
 };
