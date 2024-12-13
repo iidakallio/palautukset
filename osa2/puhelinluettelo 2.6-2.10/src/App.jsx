@@ -3,11 +3,14 @@ import Person from './components/Person';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' }
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [showAll, setShowAll] = useState(true)
+  const [filter, setFilter] = useState('')
 
 
   const handleNameChange = (event) => {
@@ -20,7 +23,11 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
-  const addName = (event) => {
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const addPerson = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
     if (persons.find(person => person.name === newName)) {
@@ -38,13 +45,21 @@ const App = () => {
   
   }
 
-  const personsToShow = showAll ? persons : [];
   
+  const personsToShow = filter ? persons.filter(person => 
+      person.name.toLowerCase().includes(filter.toLowerCase())): persons;
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}>
+      <div>
+        filter shown with: <input 
+        value={filter}
+        onChange={handleFilterChange}
+        />
+      </div>
+      <h2>add new</h2>
+      <form onSubmit={addPerson}>
         <div>
           name: <input 
           value={newName}
