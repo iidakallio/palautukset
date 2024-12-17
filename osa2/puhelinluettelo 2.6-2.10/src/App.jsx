@@ -11,16 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
- 
-  // useEffect(() => {
-  //   console.log('effect')
-  //   axios
-  //     .get('http://localhost:3001/persons')
-  //     .then(response => {
-  //       console.log('promise fulfilled')
-  //       setPersons(response.data)
-  //     })
-  // }, [])
+
 
   useEffect(() => {
     console.log('effect')
@@ -58,9 +49,6 @@ const App = () => {
       number: newNumber
     }
   
-    // setPersons(persons.concat(nameObject))
-    // setNewName('')
-    // setNewNumber('')
     personService
       .create(personObject)
       .then(returnedPerson => {
@@ -68,17 +56,21 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
-
-    // axios
-    // .post('http://localhost:3001/persons', nameObject)
-    // .then(response => {
-    //   console.log(response)
-    // })
   
+  }
+
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+      .remove(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id));
+        })
+    }
   }
   
   const personsToShow = filter ? persons.filter(person => 
-      person.name.toLowerCase().includes(filter.toLowerCase())): persons;
+      person.name.toLowerCase().includes(filter.toLowerCase())): persons
 
   return (
     <div>
@@ -93,7 +85,7 @@ const App = () => {
         addPerson={addPerson} 
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 
