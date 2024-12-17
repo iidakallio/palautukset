@@ -3,6 +3,7 @@ import axios from 'axios'
 import Persons from './components/Persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
+import personService from './services/persons'
 
 const App = () => {
   
@@ -11,13 +12,22 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
  
+  // useEffect(() => {
+  //   console.log('effect')
+  //   axios
+  //     .get('http://localhost:3001/persons')
+  //     .then(response => {
+  //       console.log('promise fulfilled')
+  //       setPersons(response.data)
+  //     })
+  // }, [])
+
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
   console.log('render', persons.length, 'persons')
@@ -43,20 +53,27 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    const nameObject = {
+    const personObject = {
       name: newName,
       number: newNumber
     }
   
-    setPersons(persons.concat(nameObject))
-    setNewName('')
-    setNewNumber('')
+    // setPersons(persons.concat(nameObject))
+    // setNewName('')
+    // setNewNumber('')
+    personService
+      .create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
 
-    axios
-    .post('http://localhost:3001/persons', nameObject)
-    .then(response => {
-      console.log(response)
-    })
+    // axios
+    // .post('http://localhost:3001/persons', nameObject)
+    // .then(response => {
+    //   console.log(response)
+    // })
   
   }
   
