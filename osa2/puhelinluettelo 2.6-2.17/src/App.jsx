@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import Persons from './components/Persons';
-import Filter from './components/Filter';
-import PersonForm from './components/PersonForm';
+import './index.css'
+import Persons from './components/Persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   
@@ -11,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   useEffect(() => {
@@ -55,7 +58,21 @@ const App = () => {
             )
             setNewName('')
             setNewNumber('')
+            setErrorMessage(`Number for ${newName} was replaced with new one`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
+          .catch(error => {
+            console.error(error)
+            setErrorMessage(
+              `Information of '${newName}' has already been deleted from server`
+            )
+            setPersons(persons.filter(n => n.id !== id))
+            return;
+          })
+          
+          
       }
       return;
     }
@@ -71,6 +88,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      setErrorMessage(`${personObject.name} was added`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
   
   }
 
@@ -81,6 +102,10 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(person => person.id !== id));
         })
+        setErrorMessage(`${name} was deleted`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
     }
   }
   
@@ -90,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter filter={filter}  handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm 
