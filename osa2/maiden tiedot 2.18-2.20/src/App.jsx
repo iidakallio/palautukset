@@ -3,18 +3,23 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 
+const CountryList = ({countries, onSelect}) => {
+  //näytetään maiden nimet jos alle 10
+}
 
-
+const CounrtyInformation = ({country}) => {
+  //Näytetään selected maan tiedot
+}
 
 
 const App = () => {
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [countries, setCountries] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
   const [filter, setFilter] = useState('')
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-  };
+    setFilter(event.target.value)
+  }
 
   return (
     <div>
