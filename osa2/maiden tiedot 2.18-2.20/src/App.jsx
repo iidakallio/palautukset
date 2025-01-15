@@ -13,6 +13,7 @@ const CountryList = ({countries, onSelect}) => {
       {countries.map((country) => (
         <li key={country.name.common}>
           {country.name.common}
+          <button onClick={() => onSelect(country.name.common)}>Show</button>
         </li>
       ))}
     </ul>
@@ -23,7 +24,29 @@ const CountryList = ({countries, onSelect}) => {
   }
 }
 
-const CountryInformation = ({country}) => {
+const CountryInformation = ({ country }) => {
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      const api_key = import.meta.env.VITE_WEATHER_API_KEY;
+      const capital = country.capital[0];
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${api_key}&units=metric`;
+      //console.log("Weather API URL:", apiUrl);
+
+      try {
+        const response = await axios.get(
+          apiUrl
+        );
+        setWeather(response.data);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+
+    fetchWeather();
+  }, [country.capital]);
+
   return (
     <div>
       <h2>{country.name.common}</h2>
@@ -35,14 +58,29 @@ const CountryInformation = ({country}) => {
           <li key={language}>{language}</li>
         ))}
       </ul>
-      <img 
+      <img
         src={country.flags.png}
         alt={`Flag of ${country.name.common}`}
-        style={{width: "200px"}}
+        style={{ width: "200px" }}
       />
+
+      {weather ? (
+        <div>
+          <h3>Weather in {country.capital}</h3>
+          <p>temperature: {weather.main.temp}°C</p>
+          <img
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt="Weather icon"
+          />
+          <p>wind: {weather.wind.speed}m/s</p>
+        </div>
+      ) : (
+        <p>Loading weather data...</p>
+      )}
     </div>
-  )
-}
+  );
+};
+
 
 
 const App = () => {
