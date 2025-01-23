@@ -59,22 +59,21 @@ const App = () => {
             setNewName('')
             setNewNumber('')
             setErrorMessage(`Number for ${newName} was replaced with new one`)
-            setTimeout(() => {
-              setErrorMessage(null)
-            }, 5000)
+            setTimeout(() => setErrorMessage(null), 5000)
           })
           .catch(error => {
             console.error(error)
             setErrorMessage(
-              `Information of '${newName}' has already been deleted from server`
+              error.response.data.error || `Information of '${newName}' has already been deleted from server`
             )
             setPersons(persons.filter(n => n.id !== id))
-            return;
+            setTimeout(() => setErrorMessage(null), 5000)
+
           })
           
           
       }
-      return;
+      return
     }
     const personObject = {
       name: newName,
@@ -87,11 +86,13 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setErrorMessage(`${returnedPerson.name} was added`)
+        setTimeout(() => setErrorMessage(null), 5000)
       })
-      setErrorMessage(`${personObject.name} was added`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      .catch(error => {
+        setErrorMessage(error.response.data.error || 'Failed to add person');
+        setTimeout(() => setErrorMessage(null), 5000);
+      })
   
   }
 
