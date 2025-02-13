@@ -1,0 +1,16 @@
+### 1. First login to get a fresh token
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "password": "password3331"
+}
+
+### 2. List all blogs to get the ID
+GET http://localhost:3003/api/blogs
+
+### 3. Delete blog (update token and ID from above responses)
+DELETE http://localhost:3003/api/blogs/67acca699076779a8ec5928b
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMSIsImlkIjoiNjdhY2M3N2E5MDc2Nzc5YThlYzU5Mjg1IiwiaWF0IjoxNzM5NDYyNTAxLCJleHAiOjE3Mzk0NjYxMDF9.qtptp4wmZ3QzW78jgqfj1Q9IIDOwNLEBvKY4D7RpAX4

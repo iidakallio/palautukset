@@ -1,0 +1,8 @@
+### Get a single blog by ID
+GET http://localhost:3003/api/blogs/679ba182926ec0a281d0eced
+
+### You can change the ID to get different blogs
+# Here are some example IDs from your blogs:
+# 67acca699076779a8ec5928b - "My Authenticated Blog1" by Test User1
+# 67acb653a43ac835e62d0f2b - "My Authenticated Blog" by Test User
+# 679920b46b71adcb569c183c - "My first blog" by John Doe 

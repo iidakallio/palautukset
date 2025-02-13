@@ -1,0 +1,21 @@
+### Login to get token
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "password": "password3331"
+}
+
+### Create new blog with token
+# @name createBlog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "title": "Test Blog with Auth",
+    "author": "Test User1",
+    "url": "https://testblog.com",
+    "likes": 0
+} 
