@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMSIsImlkIjoiNjdhY2M3N2E5MDc2Nzc5YThlYzU5Mjg1IiwiaWF0IjoxNzM5NDY3MzAzLCJleHAiOjE3Mzk0NzA5MDN9.rpAuv2emN7KO0QgvgKYbJOjY-1ih4tgO40OaA2zBzXc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InV1c2kgdXNlciIsImlkIjoiNjdiNGFjNTljNjk1ZWMyZjdmMGQ3ZjdhIiwiaWF0IjoxNzM5ODk1OTUzLCJleHAiOjE3Mzk4OTk1NTN9.ZQUC2qwIXtRUuJWnhl3kGWVcRx1TB-Sg-8LU9UmUVeY
 
 {
-  "title": "My Authenticated Blog11",
-  "author": "Test User1",
-  "url": "https://example11.com",
-  "likes": 11
+  "title": "Toinen Blogilistan toiminta ohjeet ",
+  "author": "Uusi User",
+  "url": "https://toinenblogi.com",
+  "likes": 5
 }
