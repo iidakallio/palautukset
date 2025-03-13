@@ -13,7 +13,8 @@ const App = () => {
   useEffect(() => {
     if (user) {
       blogService.getAll().then(blogs =>
-        setBlogs( blogs )
+        //setBlogs( blogs )
+        setBlogs(blogs.filter(blog => blog.user.username === user.username))
       )
     }
       
