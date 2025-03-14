@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import './index.css'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -9,6 +11,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null) 
   const [errorMessage, setErrorMessage] = useState(null)
+  const [errorType, setErrorType] = useState('')
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
 
   useEffect(() => {
     if (user) {
@@ -18,7 +24,7 @@ const App = () => {
       )
     }
       
-  }, [user])
+  }, [user, blogs])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -32,9 +38,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password,
-      })
+      const user = await loginService.login({ username, password })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
@@ -42,8 +46,17 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+
+      setErrorMessage('Login successful')
+      setErrorType('success')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setUsername('')
+      setPassword('')
+      setErrorMessage('wrong username or password')
+      setErrorType('error')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -55,8 +68,43 @@ const App = () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser')
       setUser(null)
+      setErrorMessage('logged out successfully')
+      setErrorType('success')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     } catch{
-      setErrorMessage('wrong credentials')
+      setErrorMessage('error in logout')
+      setErrorType('error')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    const newBlog = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+    }
+
+    try {
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+      const createBlog = await blogService.create(newBlog)
+      const updatedBlog = { ...createdBlog, user: { username: user.username, name: user.name } }
+      setBlogs(blogs.concat(updatedBlog))
+      setErrorMessage('a new blog was added')
+      setErrorType('success')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      
+    } catch {
+      setErrorMessage('error in creating blog')
+      setErrorType('error')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -68,6 +116,7 @@ const App = () => {
       <div>
       
         <h2>Log in to application</h2>
+        <Notification message={errorMessage} type={errorType}/>
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -96,11 +145,43 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
+      <Notification message={errorMessage} type={errorType} />
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+      
+      <h2>Create New</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title 
+          <input
+            type="text"
+            value={newTitle}
+            onChange={({target}) => setNewTitle(target.value)}
+          />
+          </div>
+          <div>
+          author
+          <input
+            type="text"
+            value={newAuthor}
+            onChange={({ target }) => setNewAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url
+          <input
+            type="text"
+            value={newUrl}
+            onChange={({ target }) => setNewUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+      
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
     </div>
+    
   )
 }
 
