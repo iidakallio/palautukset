@@ -4,6 +4,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -141,42 +142,43 @@ const App = () => {
       </div>
     )
   }
-
+//
+//
   return (
     <div>
       <h2>Blogs</h2>
       <Notification message={errorMessage} type={errorType} />
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      
-      <h2>Create New</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          title 
-          <input
-            type="text"
-            value={newTitle}
-            onChange={({target}) => setNewTitle(target.value)}
-          />
+      <Togglable buttonLabel='new note'>
+        <h2>Create New</h2>
+        <form onSubmit={handleCreate}>
+          <div>
+            title 
+            <input
+              type="text"
+              value={newTitle}
+              onChange={({target}) => setNewTitle(target.value)}
+            />
+            </div>
+            <div>
+            author
+            <input
+              type="text"
+              value={newAuthor}
+              onChange={({ target }) => setNewAuthor(target.value)}
+            />
           </div>
           <div>
-          author
-          <input
-            type="text"
-            value={newAuthor}
-            onChange={({ target }) => setNewAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url
-          <input
-            type="text"
-            value={newUrl}
-            onChange={({ target }) => setNewUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-      
+            url
+            <input
+              type="text"
+              value={newUrl}
+              onChange={({ target }) => setNewUrl(target.value)}
+            />
+          </div>
+          <button type="submit">create</button>
+        </form>
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
