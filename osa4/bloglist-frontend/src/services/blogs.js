@@ -1,6 +1,7 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
+
 let token = null
 
 const setToken = newToken => {
@@ -22,7 +23,7 @@ const create = async newObject => {
 }
 
 const update = (id, newObject) => {
-  const request = axios.put(`${ baseUrl } /${id}`, newObject)
+  const request = axios.put(`${ baseUrl}/${id}`, newObject)
   return request.then(response => response.data)
 }
 

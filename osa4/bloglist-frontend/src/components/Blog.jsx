@@ -1,10 +1,30 @@
 import { useState } from 'react'
 import '../index.css'
+import blogService from '../services/blogs'
 
-
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogList }) => {
 
   const [visible, setVisible] = useState(false)
+
+  const handleLike = async () => {
+    const updatedBlog = {
+      user: blog.user.id || blog.user,
+      likes: blog.likes + 1,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url
+    }
+    console.log('Sending update for blog:', blog)
+    console.log('blog.id:', blog.id)
+
+    try {
+      const returnedBlog = await blogService.update(blog.id, updatedBlog)
+      updateBlogList(blog.id, returnedBlog)
+    } catch (error) {
+      console.error('Error updating likes:', error)
+    }
+  }
+
 
   return (
     <div className="blog">
@@ -15,7 +35,7 @@ const Blog = ({ blog }) => {
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}
-            <button>like</button>
+            <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user?.name}</div>
         </div>
@@ -28,7 +48,5 @@ const Blog = ({ blog }) => {
     </div>
   )
 }
-    
-
 
 export default Blog

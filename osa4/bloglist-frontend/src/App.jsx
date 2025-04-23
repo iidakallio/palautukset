@@ -102,6 +102,10 @@ const App = () => {
     }
   }
 
+  const updateBlogList = (id, updatedBlog) => {
+    setBlogs(blogs.map(blog => blog.id === id ? { ...updatedBlog, user: blog.user } : blog))
+  }
+
   if (user === null) {
     return (
       <div>
@@ -142,8 +146,9 @@ const App = () => {
         <BlogForm createBlog={handleCreate} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlogList={updateBlogList} />
       )}
+
     </div>
     
   )
