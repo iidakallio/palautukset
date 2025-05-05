@@ -17,10 +17,8 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then(blogs =>
-        //setBlogs( blogs )
-        setBlogs(blogs.filter(blog => blog.user.username === user.username))
-      )
+      blogService.getAll().then(blogs => setBlogs( blogs ))
+        //setBlogs(blogs.filter(blog => blog.user.username === user.username))
     }
       
   }, [user, blogs])
@@ -103,7 +101,12 @@ const App = () => {
   }
 
   const updateBlogList = (id, updatedBlog) => {
-    setBlogs(blogs.map(blog => blog.id === id ? { ...updatedBlog, user: blog.user } : blog))
+    if (updatedBlog){
+      setBlogs(blogs.map(blog => blog.id === id ? { ...updatedBlog, user: blog.user } : blog))
+    } else {
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    }
+    
   }
 
   if (user === null) {
@@ -148,7 +151,7 @@ const App = () => {
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlogList={updateBlogList} />
+        <Blog key={blog.id} blog={blog} updateBlogList={updateBlogList} currentUser={user} />
       )}
 
     </div>

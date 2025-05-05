@@ -2,7 +2,7 @@ import { useState } from 'react'
 import '../index.css'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlogList }) => {
+const Blog = ({ blog, updateBlogList, currentUser }) => {
 
   const [visible, setVisible] = useState(false)
 
@@ -24,7 +24,19 @@ const Blog = ({ blog, updateBlogList }) => {
       console.error('Error updating likes:', error)
     }
   }
+  const handleDelete = async () => {
+    const ok = window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`)
+    if (!ok) return
 
+    try {
+      await blogService.remove(blog.id)
+      updateBlogList(blog.id, null)
+    } catch (error) {
+      console.error('Error deleting blog:', error)
+    }
+  }
+
+ //const isOwner = currentUser?.username === blog.user?.username
 
   return (
     <div className="blog">
@@ -38,6 +50,9 @@ const Blog = ({ blog, updateBlogList }) => {
             <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user?.name}</div>
+          {currentUser?.username === blog.user?.username && (
+            <button onClick={handleDelete}>remove</button>
+          )}
         </div>
       ) : (
         <div>

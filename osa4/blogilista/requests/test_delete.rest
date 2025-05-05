@@ -7,10 +7,11 @@ Content-Type: application/json
     "password": "password3331"
 }
 
-### 2. List all blogs to get the ID
+### 2. List all blogs to get the ID (use token from login)
 GET http://localhost:3003/api/blogs
+Authorization: Bearer {{login.response.body.token}}
 
-### 3. Delete blog (update token and ID from above responses)
-DELETE http://localhost:3003/api/blogs/67acca699076779a8ec5928b
+### 3. Delete blog (use token from login)
+DELETE http://localhost:3003/api/blogs/REPLACE_WITH_BLOG_ID
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMSIsImlkIjoiNjdhY2M3N2E5MDc2Nzc5YThlYzU5Mjg1IiwiaWF0IjoxNzM5NDYyNTAxLCJleHAiOjE3Mzk0NjYxMDF9.qtptp4wmZ3QzW78jgqfj1Q9IIDOwNLEBvKY4D7RpAX4
+Authorization: Bearer {{login.response.body.token}}
