@@ -60,8 +60,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = async (event) => {
-   
+  const handleLogout = async () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser')
       setUser(null)
@@ -70,7 +69,8 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-    } catch{
+    } catch (error) {
+      console.error('Logout error:', error)
       setErrorMessage('error in logout')
       setErrorType('error')
       setTimeout(() => {

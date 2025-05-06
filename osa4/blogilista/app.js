@@ -32,7 +32,7 @@ app.use(middleware.tokenExtractor)
 // Routes
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/blogs', blogsRouter)  // Now authentication is handled in the router
+app.use('/api/blogs', blogsRouter)
 
 // Error handling
 app.use(middleware.unknownEndpoint)
