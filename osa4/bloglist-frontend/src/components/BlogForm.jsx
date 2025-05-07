@@ -13,47 +13,47 @@ const BlogForm = ({ createBlog }) => {
       author,
       url
     })
-    
+
     setTitle('')
     setAuthor('')
     setUrl('')
   }
-    return (
-      <div>
-       <h2>Create New</h2>
-        <form onSubmit={handleCreate}>
-          <div>
-            title 
-            <input
-              type="text"
-              value={title}
-              onChange={({target}) => setTitle(target.value)}
-            />
-            </div>
-            <div>
-            author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
-          <div>
-            url
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </div>
-    )
-  }
-  
-  BlogForm.propTypes = {
-    createBlog: PropTypes.func.isRequired,
-  }
+  return (
+    <div>
+      <h2>Create New</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title
+          <input
+            type="text"
+            value={title}
+            onChange={( { target } ) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author
+          <input
+            type="text"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url
+          <input
+            type="text"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+}
 
-  export default BlogForm
+BlogForm.propTypes = {
+  createBlog: PropTypes.func.isRequired,
+}
+
+export default BlogForm
