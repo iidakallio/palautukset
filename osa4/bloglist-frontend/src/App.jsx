@@ -117,6 +117,7 @@ const App = () => {
           <div>
             username
             <input
+              aria-label="username"
               type="text"
               value={username}
               name="Username"
@@ -126,6 +127,7 @@ const App = () => {
           <div>
           password
             <input
+              aria-label="password"
               type="password"
               value={password}
               name="Password"
