@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux'
-import { setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux';
+import { setNotification } from './reducers/notificationReducer';
 import './index.css';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -15,7 +15,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user) {
