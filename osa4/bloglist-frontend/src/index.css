@@ -1,12 +1,11 @@
-
 .success {
-color: green;
-background: lightgrey;
-font-size: 20px;
-border-style: solid;
-border-radius: 5px;
-padding: 10px;
-margin-bottom: 10px;
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .error {
@@ -20,10 +19,9 @@ margin-bottom: 10px;
 }
 
 .blog {
-    padding-top: 10px;
-    padding-left: 2px;
-    border: solid;
-    border-width: 1px;
-    margin-bottom: 5px;
-  }
-  
+  padding-top: 10px;
+  padding-left: 2px;
+  border: solid;
+  border-width: 1px;
+  margin-bottom: 5px;
+}
