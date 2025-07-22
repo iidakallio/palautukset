@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setNotification } from './reducers/notificationReducer';
+import { initializeBlogs, createBlog } from './reducers/blogReducer';
 import './index.css';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -10,24 +11,19 @@ import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (user) {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
-    }
-  }, [user, blogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      dispatch(initializeBlogs());
       blogService.setToken(user.token);
     }
   }, []);
@@ -39,6 +35,7 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
+      dispatch(initializeBlogs());
       setUsername('');
       setPassword('');
 
@@ -62,29 +59,24 @@ const App = () => {
   };
   const handleCreate = async (BlogObject) => {
     try {
-      const createdBlog = await blogService.create(BlogObject);
-      const updatedBlog = {
-        ...createdBlog,
-        user: { username: user.username, name: user.name },
-      };
-      setBlogs(blogs.concat(updatedBlog));
-      dispatch(setNotification('a new blog added', 5));
+      await dispatch(createBlog(BlogObject));
+      dispatch(setNotification(`a new blog ${BlogObject.title} added`, 5));
     } catch {
       dispatch(setNotification('error in creating blog', 5));
     }
   };
 
-  const updateBlogList = (id, updatedBlog) => {
-    if (updatedBlog) {
-      setBlogs(
-        blogs.map((blog) =>
-          blog.id === id ? { ...updatedBlog, user: blog.user } : blog
-        )
-      );
-    } else {
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-    }
-  };
+  // const updateBlogList = (id, updatedBlog) => {
+  //   if (updatedBlog) {
+  //     setBlogs(
+  //       blogs.map((blog) =>
+  //         blog.id === id ? { ...updatedBlog, user: blog.user } : blog
+  //       )
+  //     );
+  //   } else {
+  //     setBlogs(blogs.filter((blog) => blog.id !== id));
+  //   }
+  // };
 
   if (user === null) {
     return (
@@ -134,7 +126,7 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateBlogList={updateBlogList}
+            //updateBlogList={updateBlogList}
             currentUser={user}
           />
         ))}

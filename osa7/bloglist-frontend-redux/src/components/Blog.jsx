@@ -3,7 +3,7 @@ import '../index.css';
 import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog, updateBlogList, currentUser }) => {
+const Blog = ({ blog, currentUser }) => {
   const [visible, setVisible] = useState(false);
 
   const handleLike = async () => {
@@ -69,7 +69,6 @@ const Blog = ({ blog, updateBlogList, currentUser }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  updateBlogList: PropTypes.func.isRequired,
   currentUser: PropTypes.object.isRequired,
 };
 
