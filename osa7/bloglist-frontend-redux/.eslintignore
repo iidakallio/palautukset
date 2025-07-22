@@ -1,0 +1,9 @@
+# Build output
+**/dist/**
+
+# Config files
+.eslintrc.cjs
+vite.config.js
+
+# Dependencies
+node_modules/
