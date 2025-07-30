@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNotification } from './reducers/notificationReducer';
 import { initializeBlogs, createBlog } from './reducers/blogReducer';
+import { initializeUser, loginUser, logoutUser } from './reducers/userReducer';
 import './index.css';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -13,31 +14,23 @@ import BlogForm from './components/BlogForm';
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-      dispatch(initializeBlogs());
-    }
-  }, []);
+    dispatch(initializeUser());
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      dispatch(initializeBlogs());
+      await dispatch(loginUser({ username, password }));
       setUsername('');
       setPassword('');
+      dispatch(initializeBlogs());
 
       dispatch(setNotification('logged in successfully', 5));
     } catch (exception) {
@@ -49,8 +42,7 @@ const App = () => {
 
   const handleLogout = async () => {
     try {
-      window.localStorage.removeItem('loggedBlogappUser');
-      setUser(null);
+      dispatch(logoutUser());
       dispatch(setNotification('logged out successfully', 5));
     } catch (error) {
       console.error('Logout error:', error);
