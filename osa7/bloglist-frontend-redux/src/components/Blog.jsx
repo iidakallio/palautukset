@@ -1,41 +1,23 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateLikeBlog, deleteBlog } from '../reducers/blogReducer';
 import '../index.css';
 import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
 
 const Blog = ({ blog, currentUser }) => {
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const handleLike = async () => {
-    const currentLikes = Number(blog.likes) || 0;
-    const updatedBlogData = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: currentLikes + 1,
-    };
-    console.log('Sending update for blog id:', blog.id);
-    console.log('Update data:', updatedBlogData);
-
-    if (!blog.id) {
-      console.error('Cannot update blog without an ID');
-      return;
-    }
-
-    try {
-      const returnedBlog = await blogService.update(blog.id, updatedBlogData);
-      updateBlogList(blog.id, returnedBlog);
-    } catch (error) {
-      console.error('Error updating likes:', error);
-    }
+    dispatch(updateLikeBlog(blog));
   };
   const handleDelete = async () => {
     const ok = window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`);
     if (!ok) return;
 
     try {
-      await blogService.remove(blog.id);
-      updateBlogList(blog.id, null);
+      await dispatch(deleteBlog(blog.id));
     } catch (error) {
       console.error('Error deleting blog:', error);
     }

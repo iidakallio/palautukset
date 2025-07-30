@@ -23,8 +23,8 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
-      dispatch(initializeBlogs());
       blogService.setToken(user.token);
+      dispatch(initializeBlogs());
     }
   }, []);
 
@@ -65,18 +65,6 @@ const App = () => {
       dispatch(setNotification('error in creating blog', 5));
     }
   };
-
-  // const updateBlogList = (id, updatedBlog) => {
-  //   if (updatedBlog) {
-  //     setBlogs(
-  //       blogs.map((blog) =>
-  //         blog.id === id ? { ...updatedBlog, user: blog.user } : blog
-  //       )
-  //     );
-  //   } else {
-  //     setBlogs(blogs.filter((blog) => blog.id !== id));
-  //   }
-  // };
 
   if (user === null) {
     return (
@@ -126,7 +114,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            //updateBlogList={updateBlogList}
             currentUser={user}
           />
         ))}
