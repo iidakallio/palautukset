@@ -13,16 +13,10 @@ const App = () => {
   const [, dispatch] = useNotification()
   const queryClient = useQueryClient();
 
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    if (user) {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
-    }
-  }, [user, blogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
@@ -91,44 +85,49 @@ const App = () => {
       }, 5000);
     }
   };
-  const handleCreate = async (BlogObject) => {
-    try {
-      const createdBlog = await blogService.create(BlogObject);
-      const updatedBlog = {
-        ...createdBlog,
-        user: { username: user.username, name: user.name },
-      };
-      setBlogs(blogs.concat(updatedBlog));
-      dispatch({
-        type: 'SET',
-        payload: {message: 'a new blog was added', type: 'success'}
-      });
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR' });
-      }, 5000);
-    } catch {
-      dispatch({
-        type: 'SET',
-        payload: {message: 'Error creating blog', type: 'error'}
-      });
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR' });
-      }, 5000);
-      console.error('Error creating blog:');
-    }
+
+  const handleCreate = async (blogObject) => {
+    createBlogMutation.mutate(blogObject);
   };
 
-  const updateBlogList = (id, updatedBlog) => {
-    if (updatedBlog) {
-      setBlogs(
-        blogs.map((blog) =>
-          blog.id === id ? { ...updatedBlog, user: blog.user } : blog
-        )
-      );
-    } else {
-      setBlogs(blogs.filter((blog) => blog.id !== id));
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      dispatch({
+        type: 'SET',
+        payload: {message: 'Blog created successfully', type: 'success'}
+      });
+      setTimeout(() => {
+        dispatch({ type: 'CLEAR' });
+      }, 5000);
+    },
+    onError: (error) => {
+      dispatch({
+        type: 'SET',
+        payload: {message: `Error creating blog: ${error.message}`, type: 'error'}
+      });
+      setTimeout(() => {
+        dispatch({ type: 'CLEAR' });
+      }, 5000);
     }
-  };
+  });
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    refetchOnWindowFocus: false,
+  });
+
+  if (result.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (result.isError) {
+    return <div>Error fetching blogs</div>;
+  }
+  const blogs = result.data;
+
 
   if (user === null) {
     return (
@@ -162,6 +161,8 @@ const App = () => {
     );
   }
 
+
+
   return (
     <div>
       <h2>Blogs</h2>
@@ -178,7 +179,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateBlogList={updateBlogList}
             currentUser={user}
           />
         ))}
