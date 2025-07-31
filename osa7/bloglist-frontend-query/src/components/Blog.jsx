@@ -2,45 +2,50 @@ import { useState } from 'react';
 import '../index.css';
 import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNotification } from '../NotificationContext';
 
 const Blog = ({ blog, currentUser }) => {
+  const [, dispatch] = useNotification();
+  const queryClient = useQueryClient();
+
   const [visible, setVisible] = useState(false);
 
+  const updateBlogMutation = useMutation({
+    mutationFn: (updatedBlog) => blogService.update(updatedBlog.id, updatedBlog),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
+  });
+
   const handleLike = async () => {
-    const currentLikes = Number(blog.likes) || 0;
-    const updatedBlogData = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: currentLikes + 1,
+    console.log('like')
+    const updatedBlog = {
+      ...blog,
+      likes: (blog.likes || 0) + 1,
+      user: blog.user?.id || blog.user,
     };
-    console.log('Sending update for blog id:', blog.id);
-    console.log('Update data:', updatedBlogData);
-
-    if (!blog.id) {
-      console.error('Cannot update blog without an ID');
-      return;
-    }
-
-    try {
-      const returnedBlog = await blogService.update(blog.id, updatedBlogData);
-
-    } catch (error) {
-      console.error('Error updating likes:', error);
-    }
+    updateBlogMutation.mutate(updatedBlog);
   };
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id) => blogService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    }
+  });
+
   const handleDelete = async () => {
     const ok = window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`);
     if (!ok) return;
-
     try {
-      await blogService.remove(blog.id);
+      console.log('delete')
+      await deleteBlogMutation.mutate(blog.id);
 
     } catch (error) {
       console.error('Error deleting blog:', error);
     }
-  };
-
+  }
   return (
     <div className="blog">
       {visible ? (
