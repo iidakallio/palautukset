@@ -8,24 +8,25 @@ import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 import { useNotification } from './NotificationContext'
+import { useUser } from './UserContext';
 
 const App = () => {
   const [, dispatch] = useNotification()
   const queryClient = useQueryClient();
 
+  const { user, dispatch: userDispatch } = useUser();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
 
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      userDispatch({ type: 'SET_USER', payload: user });
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [ userDispatch ]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -33,7 +34,7 @@ const App = () => {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch({ type: 'SET_USER', payload: user });
       setUsername('');
       setPassword('');
 
@@ -66,7 +67,7 @@ const App = () => {
   const handleLogout = async () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser');
-      setUser(null);
+      userDispatch({ type: 'CLEAR_USER' });
       dispatch({
         type: 'SET',
         payload: {message: 'Logged out successfully', type: 'success'}
