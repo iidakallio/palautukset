@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './index.css';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -9,6 +10,7 @@ import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 import { useNotification } from './NotificationContext'
 import { useUser } from './UserContext';
+import UserList from './components/UserList';
 
 const App = () => {
   const [, dispatch] = useNotification()
@@ -18,6 +20,9 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const padding = {
+    padding: 5
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
@@ -165,25 +170,39 @@ const App = () => {
 
 
   return (
-    <div>
-      <h2>Blogs</h2>
-      <Notification />
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-      <Togglable buttonLabel="create new blog">
-        <BlogForm createBlog={handleCreate} />
-      </Togglable>
-      {[...blogs]
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            currentUser={user}
-          />
-        ))}
-    </div>
+    <Router>
+      <div>
+        <h2>Blogs</h2>
+        <Notification />
+        <p>{user.name} logged in</p>
+        <button onClick={handleLogout}>logout</button>
+
+        <div>
+          <Link style={padding} to="/">Blogs</Link>
+          <Link style={padding} to="/users">Users</Link>
+        </div>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Togglable buttonLabel="create new blog">
+                <BlogForm createBlog={handleCreate} />
+              </Togglable>
+              {[...blogs]
+                .sort((a, b) => b.likes - a.likes)
+                .map((blog) => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    currentUser={user}
+                  />
+                ))}
+            </>
+          } />
+          <Route path="/users" element={<UserList />} />
+        </Routes>
+      </div>
+    </Router>
+
   );
 };
 
