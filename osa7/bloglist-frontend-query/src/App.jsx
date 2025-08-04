@@ -11,6 +11,7 @@ import BlogForm from './components/BlogForm';
 import { useNotification } from './NotificationContext'
 import { useUser } from './UserContext';
 import UserList from './components/UserList';
+import User from './components/User';
 
 const App = () => {
   const [, dispatch] = useNotification()
@@ -199,6 +200,7 @@ const App = () => {
             </>
           } />
           <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User />} />
         </Routes>
       </div>
     </Router>
