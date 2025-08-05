@@ -80,6 +80,21 @@ const Blog = ({ currentUser }) => {
         )}
       </div>
       <h3>comments</h3>
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        const comment = e.target.comment.value;
+        if (!comment) return;
+        try {
+          await blogService.addComment(blog.id, comment);
+          queryClient.invalidateQueries({ queryKey: ['blog', id] });
+          e.target.comment.value = '';
+        } catch (error) {
+          console.error('Error adding comment:', error);
+        }
+      }}>
+        <input name="comment" placeholder="Add a comment" />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments && blog.comments.map((comment, index) => (
           <li key={index}>{comment}</li>
