@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes, Link, useNavigate } from 'react-router-dom';
 import './index.css';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -13,10 +13,12 @@ import { useUser } from './UserContext';
 import UserList from './components/UserList';
 import User from './components/User';
 import BlogList from './components/BlogList';
+import Menu from './components/Menu';
 
 const App = () => {
   const [, dispatch] = useNotification()
   const queryClient = useQueryClient();
+
 
   const { user, dispatch: userDispatch } = useUser();
   const [username, setUsername] = useState('');
@@ -68,29 +70,6 @@ const App = () => {
         dispatch({ type: 'CLEAR' });
       }, 5000);
       console.error('Login failed:', exception);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      window.localStorage.removeItem('loggedBlogappUser');
-      userDispatch({ type: 'CLEAR_USER' });
-      dispatch({
-        type: 'SET',
-        payload: {message: 'Logged out successfully', type: 'success'}
-      });
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR' });
-      }, 5000);
-    } catch (error) {
-      console.error('Logout error:', error);
-      dispatch({
-        type: 'SET',
-        payload: {message: 'Error logging out', type: 'error'}
-      });
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR' });
-      }, 5000);
     }
   };
 
@@ -172,33 +151,24 @@ const App = () => {
 
 
   return (
-    <Router>
-      <div>
-        <h2>Blogs</h2>
-        <Notification />
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-
-        <div>
-          <Link style={padding} to="/">Blogs</Link>
-          <Link style={padding} to="/users">Users</Link>
-        </div>
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Togglable buttonLabel="create new blog">
-                <BlogForm createBlog={handleCreate} />
-              </Togglable>
-              <BlogList currentUser={user} />
-            </>
-          } />
-          <Route path="/users" element={<UserList />} />
-          <Route path="/users/:id" element={<User />} />
-          <Route path="/blogs/:id" element={<Blog currentUser={user} />} />
-        </Routes>
-      </div>
-    </Router>
-
+    <div>
+      <Menu username={user.name}/>
+      <h2>Blog app</h2>
+      <Notification />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Togglable buttonLabel="create new blog">
+              <BlogForm createBlog={handleCreate} />
+            </Togglable>
+            <BlogList currentUser={user} />
+          </>
+        } />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/blogs/:id" element={<Blog currentUser={user} />} />
+      </Routes>
+    </div>
   );
 };
 
