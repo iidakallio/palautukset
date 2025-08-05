@@ -1,22 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../index.css';
 import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useNotification } from '../NotificationContext';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const Blog = ({ blog, currentUser }) => {
-  const [, dispatch] = useNotification();
+const Blog = ({ currentUser }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [, dispatch] = useNotification();
 
-  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (currentUser?.token) {
+      blogService.setToken(currentUser.token);
+    }
+  }, [currentUser]);
 
   const updateBlogMutation = useMutation({
     mutationFn: (updatedBlog) => blogService.update(updatedBlog.id, updatedBlog),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      queryClient.invalidateQueries({ queryKey: ['blog', id] });
     },
   });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id) => blogService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      navigate('/');
+    }
+  });
+
+  const { data: blog, isLoading, error } = useQuery({
+    queryKey: ['blog', id],
+    queryFn: () => blogService.getById(id),
+  });
+
+  if (isLoading) return <div>Loading blog...</div>;
+  if (error || !blog) return <div>Blog not found</div>;
+
 
   const handleLike = async () => {
     console.log('like')
@@ -28,52 +53,39 @@ const Blog = ({ blog, currentUser }) => {
     updateBlogMutation.mutate(updatedBlog);
   };
 
-  const deleteBlogMutation = useMutation({
-    mutationFn: (id) => blogService.remove(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-    }
-  });
-
-  const handleDelete = async () => {
+  const handleDelete = () => {
     const ok = window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`);
     if (!ok) return;
     try {
       console.log('delete')
-      await deleteBlogMutation.mutate(blog.id);
+      deleteBlogMutation.mutate(blog.id);
 
     } catch (error) {
       console.error('Error deleting blog:', error);
     }
   }
+
   return (
     <div className="blog">
-      {visible ? (
+      <div>
+        {blog.title} {blog.author}
+        <div>{blog.url}</div>
         <div>
-          {blog.title} {blog.author}
-          <button onClick={() => setVisible(false)}>hide</button>
-          <div>{blog.url}</div>
-          <div>
             likes {blog.likes}
-            <button onClick={handleLike}>like</button>
-          </div>
-          <div>{blog.user?.name}</div>
-          {currentUser?.username === blog.user?.username && (
-            <button onClick={handleDelete}>remove</button>
-          )}
+          <button onClick={handleLike}>like</button>
         </div>
-      ) : (
-        <div>
-          {blog.title} {blog.author}
-          <button onClick={() => setVisible(true)}>view</button>
-        </div>
-      )}
+        <div>{blog.user?.name}</div>
+        {currentUser?.username === blog.user?.username && (
+          <button onClick={handleDelete}>remove</button>
+        )}
+      </div>
+      <div>
+        {blog.title} {blog.author}
+      </div>
     </div>
   );
 };
-
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
   currentUser: PropTypes.object.isRequired,
 };
 

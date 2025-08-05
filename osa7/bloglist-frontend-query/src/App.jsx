@@ -12,6 +12,7 @@ import { useNotification } from './NotificationContext'
 import { useUser } from './UserContext';
 import UserList from './components/UserList';
 import User from './components/User';
+import BlogList from './components/BlogList';
 
 const App = () => {
   const [, dispatch] = useNotification()
@@ -188,24 +189,18 @@ const App = () => {
               <Togglable buttonLabel="create new blog">
                 <BlogForm createBlog={handleCreate} />
               </Togglable>
-              {[...blogs]
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                  <Blog
-                    key={blog.id}
-                    blog={blog}
-                    currentUser={user}
-                  />
-                ))}
+              <BlogList currentUser={user} />
             </>
           } />
           <Route path="/users" element={<UserList />} />
           <Route path="/users/:id" element={<User />} />
+          <Route path="/blogs/:id" element={<Blog currentUser={user} />} />
         </Routes>
       </div>
     </Router>
 
   );
 };
+
 
 export default App;

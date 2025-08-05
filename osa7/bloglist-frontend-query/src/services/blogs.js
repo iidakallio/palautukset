@@ -35,4 +35,9 @@ const remove = async (id) => {
   return response.data;
 };
 
-export default { getAll, create, update, remove, setToken };
+const getById = async (id) => {
+  const response = await axios.get(`${baseUrl}/${id}`);
+  return response.data;
+};
+
+export default { getAll, create, update, remove, getById, setToken };

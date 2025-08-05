@@ -32,12 +32,6 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody>
-          {/* {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          ))} */}
           {users.map(user => <tr key={user.id} >
             <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
             <td>{user.blogs.length}</td>
