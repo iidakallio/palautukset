@@ -66,22 +66,25 @@ const Blog = ({ currentUser }) => {
   }
 
   return (
-    <div className="blog">
+    <div>
       <div>
-        {blog.title} {blog.author}
+        <h2>{blog.title} {blog.author}</h2>
         <div>{blog.url}</div>
         <div>
-            likes {blog.likes}
+          {blog.likes} likes
           <button onClick={handleLike}>like</button>
         </div>
-        <div>{blog.user?.name}</div>
+        <div>added by {blog.user?.name}</div>
         {currentUser?.username === blog.user?.username && (
           <button onClick={handleDelete}>remove</button>
         )}
       </div>
-      <div>
-        {blog.title} {blog.author}
-      </div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments && blog.comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };

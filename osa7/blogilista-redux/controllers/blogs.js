@@ -1,20 +1,10 @@
 const jwt = require('jsonwebtoken');
 const express = require('express');
-// const { request, response } = require('../app')
 const Blog = require('../models/blog');
 const User = require('../models/user');
 const middleware = require('../utils/middleware');
 const blogsRouter = express.Router();
 
-// const getTokenFrom = request => {
-//     const authorization = request.get('authorization')
-//     if (authorization && authorization.startsWith('Bearer ')) {
-//       return authorization.replace('Bearer ', '')
-//     }
-//     return null
-//   }
-
-// Public route - GET all blogs
 blogsRouter.get('/', async (request, response, next) => {
   try {
     const blogs = await Blog.find({}).populate('user', {
@@ -28,7 +18,6 @@ blogsRouter.get('/', async (request, response, next) => {
   }
 });
 
-// Public route - GET single blog
 blogsRouter.get('/:id', async (request, response, next) => {
   try {
     const blog = await Blog.findById(request.params.id).populate('user', {
@@ -46,7 +35,6 @@ blogsRouter.get('/:id', async (request, response, next) => {
   }
 });
 
-// Protected route - POST new blog
 blogsRouter.post(
   '/',
   middleware.userExtractor,
@@ -86,7 +74,6 @@ blogsRouter.post(
   }
 );
 
-// Protected route - DELETE blog
 blogsRouter.delete(
   '/:id',
   middleware.userExtractor,
@@ -114,7 +101,6 @@ blogsRouter.delete(
   }
 );
 
-// Public route? - PUT update blog (Reverted: No auth middleware here unless you had it before)
 blogsRouter.put('/:id', async (request, response, next) => {
   const { id } = request.params;
   const { title, author, url, likes } = request.body;
